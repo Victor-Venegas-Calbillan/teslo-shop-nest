@@ -9,6 +9,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
 
 @Injectable()
 export class ProductsService {
@@ -29,9 +30,12 @@ export class ProductsService {
     }
   }
 
-  //TODO: Implementar paginación
-  async findAll() {
-    return await this.productRepository.find({});
+  async findAll(paginationDto: PaginationDto) {
+    const { limit = 10, offset = 0 } = paginationDto;
+    return await this.productRepository.find({
+      take: limit,
+      skip: offset,
+    });
   }
 
   async findOne(id: string) {
@@ -47,11 +51,10 @@ export class ProductsService {
     return `This action updates a #${id} product`;
   }
 
-  remove(id: string) {
-    const product = this.productRepository.delete(id);
+  async remove(id: string) {
+    const product = await this.findOne(id);
 
-    if (!product)
-      throw new BadRequestException(`Product with id ${id} not found`);
+    await this.productRepository.remove(product);
   }
 
   private handleDBExceptions(error: any) {
