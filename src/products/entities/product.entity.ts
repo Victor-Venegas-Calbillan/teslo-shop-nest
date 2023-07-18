@@ -58,5 +58,12 @@ export class Product {
       .replaceAll("'", '');
   }
 
-  //@BeforeUpdate
+  @BeforeUpdate()
+  checkSlugUpdate() {
+    this.slug = this.slug
+      .trim()
+      .toLowerCase()
+      .replaceAll(' ', '_')
+      .replaceAll("'", '');
+  }
 }
