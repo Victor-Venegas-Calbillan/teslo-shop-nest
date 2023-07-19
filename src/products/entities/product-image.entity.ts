@@ -3,12 +3,10 @@ import { Product } from '.';
 
 @Entity()
 export class ProductImage {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-  @Column('text', {
-    unique: true,
-  })
+  @Column('text')
   url: string;
 
   @ManyToOne(() => Product, (product) => product.images)
